@@ -30,7 +30,11 @@ class HSChatbot {
         });
 
         this.socket.on('message', (data) => {
-            this.displayMessage(data.content, 'assistant', data.timestamp);
+            if (data.type === 'human_contact' || data.type === 'human_contact_offer') {
+                this.displayHumanContactMessage(data);
+            } else {
+                this.displayMessage(data.content, 'assistant', data.timestamp);
+            }
             this.hideTypingIndicator();
         });
 
@@ -49,6 +53,67 @@ class HSChatbot {
                 this.hideTypingIndicator();
             }
         });
+    }
+    
+    displayHumanContactMessage(data) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message assistant';
+        
+        const time = data.timestamp ? new Date(data.timestamp) : new Date();
+        const timeString = time.toLocaleTimeString('fr-FR', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        let htmlContent = '';
+        
+        if (data.type === 'human_contact') {
+            // Message pour la redirection directe vers WhatsApp
+            htmlContent = `
+                <div class="message-bubble">
+                    <div class="human-contact-message">
+                        <h6><i class="fas fa-headset me-2"></i>Contact avec un conseiller</h6>
+                        <p>${data.content}</p>
+                        <div class="human-contact-actions">
+                            <a href="${data.whatsapp_link}" target="_blank" class="whatsapp-contact-btn">
+                                <i class="fab fa-whatsapp"></i>
+                                Discuter sur WhatsApp
+                            </a>
+                            <a href="tel:${data.phone_number}" class="btn btn-outline-secondary">
+                                <i class="fas fa-phone-alt me-2"></i>
+                                Appeler
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="message-time">${timeString}</div>
+            `;
+        } else if (data.type === 'human_contact_offer') {
+            // Message pour l'offre de contact humain
+            htmlContent = `
+                <div class="message-bubble">
+                    <div class="human-contact-message">
+                        <h6><i class="fas fa-question-circle me-2"></i>Besoin d'aide supplémentaire ?</h6>
+                        <p>${data.content}</p>
+                        <div class="human-contact-actions">
+                            <a href="${data.whatsapp_link}" target="_blank" class="whatsapp-contact-btn">
+                                <i class="fab fa-whatsapp"></i>
+                                Oui, contacter un conseiller
+                            </a>
+                            <button class="btn btn-outline-secondary" onclick="sendQuickMessage('Non merci, continuons la discussion')">
+                                <i class="fas fa-robot me-2"></i>
+                                Non, continuons
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="message-time">${timeString}</div>
+            `;
+        }
+        
+        messageDiv.innerHTML = htmlContent;
+        this.messageContainer.appendChild(messageDiv);
+        this.scrollToBottom();
     }
 
     setupEventListeners() {

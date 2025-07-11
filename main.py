@@ -146,6 +146,8 @@ def handle_message(data):
         
         # Import AI components
         import google.generativeai as genai
+        from models.agents.orchestrator import Orchestrator
+        from models.agents.whatsapp_router import WhatsAppRouterAgent
         
         # Configure Gemini
         genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
@@ -155,29 +157,65 @@ def handle_message(data):
         products_df = data_loader.load_products() if data_loader else None
         services_df = data_loader.load_services() if data_loader else None
         
-        # Create context-aware prompt
-        context = f"""Tu es un assistant IA pour HS Traiteur, un service de restauration.
-
-Informations disponibles:
-- {len(products_df) if products_df is not None else 0} produits dans notre catalogue
-- {len(services_df) if services_df is not None else 0} services disponibles
-- Spécialisé dans la restauration et traiteur
-
-Réponds en français de manière professionnelle et utile. Si l'utilisateur demande des informations sur nos produits ou services, utilise les données disponibles.
-
-Message utilisateur: {user_message}"""
+        # Vérifier si l'utilisateur demande explicitement un contact humain
+        if any(term in user_message.lower() for term in [
+            "parler à un humain", "agent humain", "personne réelle", "vraie personne", 
+            "conseiller", "représentant", "whatsapp", "téléphone", "contact direct"
+        ]):
+            # Rediriger vers WhatsApp
+            whatsapp_agent = WhatsAppRouterAgent()
+            contact_info = whatsapp_agent.get_human_contact_message(user_message)
+            
+            emit('message', {
+                'type': 'human_contact',
+                'content': "Je vous connecte avec un conseiller. Un moment s'il vous plaît...",
+                'whatsapp_link': contact_info["whatsapp_link"],
+                'phone_number': contact_info["phone_number"],
+                'sender': 'assistant',
+                'timestamp': datetime.now().isoformat()
+            })
+            return
         
-        # Generate AI response
-        response = model.generate_content(
-            context,
-            generation_config=genai.types.GenerationConfig(
-                temperature=0.7,
-                max_output_tokens=500,
-                top_p=0.9,
-            )
-        )
+        # Utiliser l'orchestrateur pour déterminer la meilleure réponse
+        orchestrator = Orchestrator(model)
+        result = orchestrator.route_query(user_message)
         
-        ai_response = response.text
+        # Vérifier si la réponse suggère un contact humain
+        if isinstance(result, dict) and result.get('offer_human_contact'):
+            ai_response = result['message']
+            
+            # Envoyer d'abord la réponse de l'IA
+            emit('message', {
+                'type': 'text',
+                'content': ai_response,
+                'sender': 'assistant',
+                'timestamp': datetime.now().isoformat()
+            })
+            
+            # Puis proposer le contact humain
+            emit('message', {
+                'type': 'human_contact_offer',
+                'content': "Souhaitez-vous être mis en relation avec un conseiller pour une assistance plus personnalisée?",
+                'whatsapp_link': result.get('whatsapp_link', ''),
+                'phone_number': result.get('phone_number', ''),
+                'sender': 'assistant',
+                'timestamp': datetime.now().isoformat()
+            })
+            return
+        elif isinstance(result, dict) and result.get('type') == 'whatsapp_redirect':
+            # Redirection directe vers WhatsApp
+            emit('message', {
+                'type': 'human_contact',
+                'content': result.get('message', "Je vous mets en relation avec un conseiller..."),
+                'whatsapp_link': result.get('whatsapp_link', ''),
+                'phone_number': result.get('phone_number', ''),
+                'sender': 'assistant',
+                'timestamp': datetime.now().isoformat()
+            })
+            return
+        else:
+            # Réponse normale
+            ai_response = result if isinstance(result, str) else str(result)
         
         # Send AI response
         emit('message', {

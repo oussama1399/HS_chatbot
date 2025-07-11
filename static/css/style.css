@@ -436,6 +436,47 @@ html, body {
     }
 }
 
+/* WhatsApp Contact Button */
+.whatsapp-contact-btn {
+    background-color: #25D366;
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 10px 16px;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    font-weight: 500;
+    box-shadow: var(--box-shadow);
+}
+
+.whatsapp-contact-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
+    background-color: #20ba5a;
+    color: white;
+}
+
+.whatsapp-contact-btn i {
+    margin-right: 8px;
+    font-size: 1.2em;
+}
+
+.human-contact-message {
+    background-color: rgba(37, 211, 102, 0.1);
+    border: 1px solid rgba(37, 211, 102, 0.3);
+    border-radius: var(--border-radius);
+    padding: 16px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.human-contact-actions {
+    display: flex;
+    margin-top: 15px;
+}
+
 /* Print styles */
 @media print {
     .sidebar,
