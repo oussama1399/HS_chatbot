@@ -137,7 +137,7 @@ def handle_disconnect():
 @socketio.on('message')
 def handle_message(data):
     """Handle incoming messages."""
-    logger.info(f"📨 Received message: {data}")
+    
     
     try:
         user_message = data.get('content', '')
