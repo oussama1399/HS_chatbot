@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HS Chatbot - Assistant Traiteur</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="fas fa-utensils me-2"></i>
+                HS Traiteur
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="#" id="show-stats">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    Statistiques
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <!-- Sidebar -->
+            <div class="col-md-3 bg-light border-end sidebar">
+                <div class="p-3">
+                    <h5 class="mb-3">
+                        <i class="fas fa-robot me-2"></i>
+                        Assistant IA
+                    </h5>
+                    
+                    <!-- Connection Status -->
+                    <div class="alert alert-info" role="alert" id="connection-status">
+                        <i class="fas fa-wifi me-2"></i>
+                        Connexion...
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="quick-actions mb-4">
+                        <h6 class="mb-2">Actions rapides</h6>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary btn-sm" onclick="sendQuickMessage('Montrez-moi vos services de mariage')">
+                                <i class="fas fa-heart me-1"></i>
+                                Services Mariage
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm" onclick="sendQuickMessage('Quels sont vos buffets disponibles?')">
+                                <i class="fas fa-utensils me-1"></i>
+                                Buffets
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm" onclick="sendQuickMessage('Donnez-moi les prix de vos services')">
+                                <i class="fas fa-euro-sign me-1"></i>
+                                Tarifs
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm" onclick="sendQuickMessage('Aidez-moi à organiser un événement')">
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                Organiser un événement
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Products -->
+                    <div class="recent-products">
+                        <h6 class="mb-2">Produits populaires</h6>
+                        <div id="popular-products" class="small text-muted">
+                            Chargement...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chat Area -->
+            <div class="col-md-9 d-flex flex-column chat-container">
+                <!-- Chat Header -->
+                <div class="chat-header bg-white border-bottom p-3">
+                    <div class="d-flex align-items-center">
+                        <img src="https://via.placeholder.com/40x40/007bff/ffffff?text=HS" class="rounded-circle me-3" alt="HS Traiteur">
+                        <div>
+                            <h6 class="mb-0">Assistant HS Traiteur</h6>
+                            <small class="text-muted">
+                                <span id="typing-indicator" class="d-none">
+                                    <i class="fas fa-circle text-success me-1"></i>
+                                    En train d'écrire...
+                                </span>
+                                <span id="online-indicator">
+                                    <i class="fas fa-circle text-success me-1"></i>
+                                    En ligne
+                                </span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chat Messages -->
+                <div class="chat-messages flex-grow-1 p-3" id="chat-messages">
+                    <div class="text-center text-muted mb-4">
+                        <i class="fas fa-comments fa-2x mb-3"></i>
+                        <p>Bienvenue! Commencez votre conversation avec l'assistant HS Traiteur.</p>
+                    </div>
+                </div>
+                
+                <!-- Chat Input -->
+                <div class="chat-input bg-white border-top p-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="message-input" 
+                               placeholder="Tapez votre message..." 
+                               onkeypress="handleEnterKey(event)">
+                        <button class="btn btn-primary" type="button" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="form-text mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-lightbulb me-1"></i>
+                            Vous pouvez demander des informations sur nos produits, services, prix, et plus encore!
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Modal -->
+    <div class="modal fade" id="statsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Statistiques de l'application
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="stats-content">
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Chargement...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay d-none" id="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

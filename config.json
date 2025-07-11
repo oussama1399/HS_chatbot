@@ -1,0 +1,25 @@
+{
+  "app_name": "HS Chatbot",
+  "version": "1.0.0",
+  "description": "AI-powered catering service management chatbot",
+  "model_config": {
+    "gemini_model": "gemini-1.5-flash",
+    "temperature": 0.7,
+    "max_tokens": 1000,
+    "top_p": 0.9
+  },
+  "chroma_config": {
+    "collection_name": "hs_catering_collection",
+    "embedding_model": "all-MiniLM-L6-v2",
+    "similarity_threshold": 0.7
+  },
+  "data_sources": {
+    "products": "products_rag.csv",
+    "services": "services_rag.csv"
+  },
+  "response_templates": {
+    "greeting": "Bonjour! Je suis votre assistant HS Traiteur. Comment puis-je vous aider aujourd'hui?",
+    "error": "Désolé, je rencontre une difficulté. Pouvez-vous reformuler votre question?",
+    "no_results": "Je n'ai pas trouvé d'informations correspondant à votre demande. Pouvez-vous être plus précis?"
+  }
+}
