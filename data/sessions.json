@@ -1,13 +1,1 @@
-{
-  "e871c096-d54f-42b0-a43e-eedae786cb18": {
-    "session_id": "e871c096-d54f-42b0-a43e-eedae786cb18",
-    "created_at": "2025-07-11T11:19:30.648138",
-    "last_activity": "2025-07-11T11:19:30.648138",
-    "messages": [],
-    "user_context": {
-      "preferences": {},
-      "current_inquiry": null,
-      "order_in_progress": false
-    }
-  }
-}
+{}

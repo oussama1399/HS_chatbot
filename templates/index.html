@@ -9,23 +9,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--primary-color); box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 15px 0;">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">
+            <a class="navbar-brand fw-bold" href="#" style="color: var(--secondary-color); font-family: 'Montserrat', sans-serif; letter-spacing: 1px; font-size: 1.5rem;">
                 <i class="fas fa-utensils me-2"></i>
                 HS Traiteur
             </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="#" id="show-stats">
-                    <i class="fas fa-chart-bar me-1"></i>
-                    Statistiques
-                </a>
-            </div>
+            <!-- Le bouton des statistiques a été supprimé -->
         </div>
     </nav>
 
@@ -33,67 +30,66 @@
     <div class="container-fluid h-100">
         <div class="row h-100">
             <!-- Sidebar -->
-            <div class="col-md-3 bg-light border-end sidebar">
+            <div class="col-md-3 sidebar">
                 <div class="p-3">
-                    <h5 class="mb-3">
+                    <h4 class="mb-4" style="color: var(--primary-color); font-weight: 600; border-bottom: 2px solid var(--secondary-color); padding-bottom: 10px; display: inline-block;">
                         <i class="fas fa-robot me-2"></i>
                         Assistant IA
-                    </h5>
+                    </h4>
                     
                     <!-- Connection Status -->
-                    <div class="alert alert-info" role="alert" id="connection-status">
-                        <i class="fas fa-wifi me-2"></i>
-                        Connexion...
+                    <div class="alert" role="alert" id="connection-status" style="background-color: white; color: var(--primary-color); border: none; box-shadow: var(--box-shadow); border-radius: var(--border-radius); padding: 12px 16px; margin-bottom: 20px;">
+                        <i class="fas fa-wifi me-2" style="color: var(--secondary-color);"></i>
+                        <span style="font-weight: 500;">Connexion...</span>
                     </div>
                     
                     <!-- Quick Actions -->
                     <div class="quick-actions mb-4">
-                        <h6 class="mb-2">Actions rapides</h6>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-outline-primary btn-sm" onclick="sendQuickMessage('Montrez-moi vos services de mariage')">
-                                <i class="fas fa-heart me-1"></i>
+                        <h6 class="mb-3" style="color: var(--primary-color); font-weight: 600; font-size: 1rem;">
+                            <i class="fas fa-bolt me-2"></i>
+                            Actions rapides
+                        </h6>
+                        <div class="d-grid gap-3">
+                            <button class="btn" style="background-color: white; border: none; color: var(--primary-color); box-shadow: var(--box-shadow); border-radius: var(--border-radius); text-align: left; padding: 12px 15px; font-weight: 500;" onclick="sendQuickMessage('Montrez-moi vos services de mariage')">
+                                <i class="fas fa-heart me-2" style="color: var(--secondary-color);"></i>
                                 Services Mariage
                             </button>
-                            <button class="btn btn-outline-primary btn-sm" onclick="sendQuickMessage('Quels sont vos buffets disponibles?')">
-                                <i class="fas fa-utensils me-1"></i>
+                            <button class="btn" style="background-color: white; border: none; color: var(--primary-color); box-shadow: var(--box-shadow); border-radius: var(--border-radius); text-align: left; padding: 12px 15px; font-weight: 500;" onclick="sendQuickMessage('Quels sont vos buffets disponibles?')">
+                                <i class="fas fa-utensils me-2" style="color: var(--secondary-color);"></i>
                                 Buffets
                             </button>
-                            <button class="btn btn-outline-primary btn-sm" onclick="sendQuickMessage('Donnez-moi les prix de vos services')">
-                                <i class="fas fa-euro-sign me-1"></i>
+                            <button class="btn" style="background-color: white; border: none; color: var(--primary-color); box-shadow: var(--box-shadow); border-radius: var(--border-radius); text-align: left; padding: 12px 15px; font-weight: 500;" onclick="sendQuickMessage('Donnez-moi les prix de vos services')">
+                                <i class="fas fa-euro-sign me-2" style="color: var(--secondary-color);"></i>
                                 Tarifs
                             </button>
-                            <button class="btn btn-outline-primary btn-sm" onclick="sendQuickMessage('Aidez-moi à organiser un événement')">
-                                <i class="fas fa-calendar-alt me-1"></i>
+                            <button class="btn" style="background-color: white; border: none; color: var(--primary-color); box-shadow: var(--box-shadow); border-radius: var(--border-radius); text-align: left; padding: 12px 15px; font-weight: 500;" onclick="sendQuickMessage('Aidez-moi à organiser un événement')">
+                                <i class="fas fa-calendar-alt me-2" style="color: var(--secondary-color);"></i>
                                 Organiser un événement
                             </button>
                         </div>
                     </div>
                     
-                    <!-- Recent Products -->
-                    <div class="recent-products">
-                        <h6 class="mb-2">Produits populaires</h6>
-                        <div id="popular-products" class="small text-muted">
-                            Chargement...
-                        </div>
-                    </div>
+                    <!-- Section des produits populaires supprimée -->
                 </div>
             </div>
             
             <!-- Chat Area -->
             <div class="col-md-9 d-flex flex-column chat-container">
                 <!-- Chat Header -->
-                <div class="chat-header bg-white border-bottom p-3">
+                <div class="chat-header p-3">
                     <div class="d-flex align-items-center">
-                        <img src="https://via.placeholder.com/40x40/007bff/ffffff?text=HS" class="rounded-circle me-3" alt="HS Traiteur">
+                        <div class="avatar-container me-3" style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color) 0%, #4a7d72 100%); display: flex; align-items: center; justify-content: center; box-shadow: var(--box-shadow);">
+                            <i class="fas fa-robot" style="color: white; font-size: 1.5rem;"></i>
+                        </div>
                         <div>
-                            <h6 class="mb-0">Assistant HS Traiteur</h6>
-                            <small class="text-muted">
+                            <h5 class="mb-0" style="color: white; font-weight: 600;">Assistant HS Traiteur</h5>
+                            <small style="color: white; opacity: 0.8;">
                                 <span id="typing-indicator" class="d-none">
-                                    <i class="fas fa-circle text-success me-1"></i>
+                                    <i class="fas fa-circle-notch fa-spin me-1"></i>
                                     En train d'écrire...
                                 </span>
                                 <span id="online-indicator">
-                                    <i class="fas fa-circle text-success me-1"></i>
+                                    <i class="fas fa-circle me-1" style="color: #5cb85c;"></i>
                                     En ligne
                                 </span>
                             </small>
@@ -102,25 +98,30 @@
                 </div>
                 
                 <!-- Chat Messages -->
-                <div class="chat-messages flex-grow-1 p-3" id="chat-messages">
-                    <div class="text-center text-muted mb-4">
-                        <i class="fas fa-comments fa-2x mb-3"></i>
-                        <p>Bienvenue! Commencez votre conversation avec l'assistant HS Traiteur.</p>
+                <div class="chat-messages flex-grow-1" id="chat-messages">
+                    <div class="text-center mb-4 p-4" style="color: var(--primary-color);">
+                        <div class="welcome-icon mb-4">
+                            <i class="fas fa-comments fa-3x" style="color: var(--secondary-color); text-shadow: 0 2px 10px rgba(0,0,0,0.1);"></i>
+                        </div>
+                        <h4 style="font-weight: 600; margin-bottom: 10px;">Bienvenue chez HS Traiteur!</h4>
+                        <p style="font-weight: 400; opacity: 0.8;">Comment puis-je vous aider aujourd'hui avec vos besoins en traiteur?</p>
                     </div>
                 </div>
                 
                 <!-- Chat Input -->
-                <div class="chat-input bg-white border-top p-3">
+                <div class="chat-input bg-white border-top">
                     <div class="input-group">
                         <input type="text" class="form-control" id="message-input" 
                                placeholder="Tapez votre message..." 
-                               onkeypress="handleEnterKey(event)">
-                        <button class="btn btn-primary" type="button" onclick="sendMessage()">
+                               onkeypress="handleEnterKey(event)" 
+                               style="border: none; border-radius: 30px; padding: 12px 20px; margin: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); color: var(--dark-color); font-weight: 500;">
+                        <button class="btn" type="button" onclick="sendMessage()" 
+                                style="background-color: var(--primary-color); color: white; border-radius: 50%; width: 50px; height: 50px; margin: 10px 15px 10px 0; display: flex; align-items: center; justify-content: center; box-shadow: var(--box-shadow);">
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
                     <div class="form-text mt-2">
-                        <small class="text-muted">
+                        <small style="color: #c9a961;">
                             <i class="fas fa-lightbulb me-1"></i>
                             Vous pouvez demander des informations sur nos produits, services, prix, et plus encore!
                         </small>
@@ -130,33 +131,11 @@
         </div>
     </div>
 
-    <!-- Statistics Modal -->
-    <div class="modal fade" id="statsModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-chart-bar me-2"></i>
-                        Statistiques de l'application
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="stats-content">
-                        <div class="text-center">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Chargement...</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Le modal des statistiques a été supprimé -->
 
     <!-- Loading Overlay -->
     <div class="loading-overlay d-none" id="loading-overlay">
-        <div class="spinner-border text-primary" role="status">
+        <div class="spinner-border" role="status" style="color: #c9a961;">
             <span class="visually-hidden">Chargement...</span>
         </div>
     </div>

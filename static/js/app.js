@@ -13,7 +13,7 @@ class HSChatbot {
         
         this.initializeSocketIO();
         this.setupEventListeners();
-        this.loadPopularProducts();
+        // this.loadPopularProducts(); // Fonction supprimée
     }
 
     initializeSocketIO() {
@@ -61,10 +61,7 @@ class HSChatbot {
             }
         });
 
-        // Stats modal
-        document.getElementById('show-stats').addEventListener('click', () => {
-            this.showStatsModal();
-        });
+        // La référence au bouton de statistiques a été supprimée
 
         // Mobile sidebar toggle
         this.setupMobileMenu();
@@ -276,112 +273,9 @@ class HSChatbot {
         }, 5000);
     }
 
-    async loadPopularProducts() {
-        try {
-            const response = await fetch('/api/products');
-            const products = await response.json();
-            
-            if (products && products.length > 0) {
-                const popularProductsDiv = document.getElementById('popular-products');
-                const topProducts = products.slice(0, 3);
-                
-                let html = '';
-                topProducts.forEach(product => {
-                    html += `
-                        <div class="mb-2 p-2 border rounded">
-                            <small class="fw-bold">${product.Name}</small><br>
-                            <small class="text-muted">${product.Regular_price} MAD</small>
-                        </div>
-                    `;
-                });
-                
-                popularProductsDiv.innerHTML = html;
-            }
-        } catch (error) {
-            console.error('Error loading popular products:', error);
-        }
-    }
+    // La fonction loadPopularProducts a été supprimée
 
-    async showStatsModal() {
-        const modal = new bootstrap.Modal(document.getElementById('statsModal'));
-        const statsContent = document.getElementById('stats-content');
-        
-        // Show loading
-        statsContent.innerHTML = `
-            <div class="text-center">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Chargement...</span>
-                </div>
-            </div>
-        `;
-        
-        modal.show();
-
-        try {
-            const response = await fetch('/api/stats');
-            const stats = await response.json();
-            
-            statsContent.innerHTML = `
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="stats-card">
-                            <div class="stats-icon">
-                                <i class="fas fa-box"></i>
-                            </div>
-                            <div class="stats-value">${stats.products?.total_products || 0}</div>
-                            <div class="stats-label">Produits</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stats-card">
-                            <div class="stats-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="stats-value">${stats.sessions?.active_sessions || 0}</div>
-                            <div class="stats-label">Sessions actives</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stats-card">
-                            <div class="stats-icon">
-                                <i class="fas fa-comments"></i>
-                            </div>
-                            <div class="stats-value">${stats.sessions?.total_messages || 0}</div>
-                            <div class="stats-label">Messages</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <div class="stats-card">
-                            <div class="stats-icon">
-                                <i class="fas fa-database"></i>
-                            </div>
-                            <div class="stats-value">${stats.vector_db?.total_items || 0}</div>
-                            <div class="stats-label">Éléments vectoriels</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="stats-card">
-                            <div class="stats-icon">
-                                <i class="fas fa-euro-sign"></i>
-                            </div>
-                            <div class="stats-value">${Math.round(stats.products?.price_range?.avg || 0)}</div>
-                            <div class="stats-label">Prix moyen (MAD)</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        } catch (error) {
-            console.error('Error loading stats:', error);
-            statsContent.innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    Erreur lors du chargement des statistiques
-                </div>
-            `;
-        }
-    }
+    // La méthode showStatsModal a été supprimée
 
     getSuggestions(preferences) {
         this.socket.emit('get_suggestions', { preferences });

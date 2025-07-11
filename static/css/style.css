@@ -1,14 +1,18 @@
 /* Custom CSS for HS Chatbot */
 
 :root {
-    --primary-color: #007bff;
-    --secondary-color: #6c757d;
-    --success-color: #28a745;
-    --warning-color: #ffc107;
-    --danger-color: #dc3545;
-    --info-color: #17a2b8;
-    --light-color: #f8f9fa;
-    --dark-color: #343a40;
+    --primary-color: #34665b;
+    --secondary-color: #d4b76e;
+    --success-color: #5cb85c;
+    --warning-color: #d4b76e;
+    --danger-color: #d9534f;
+    --info-color: #5bc0de;
+    --light-color: #f9f9f9;
+    --dark-color: #34665b;
+    --background-color: #f5f5f5;
+    --text-color: #333333;
+    --border-radius: 12px;
+    --box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 /* Base styles */
@@ -16,7 +20,9 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Montserrat', 'Open Sans', 'Segoe UI', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 .container-fluid {
@@ -29,40 +35,55 @@ html, body {
     overflow-y: auto;
     position: sticky;
     top: 56px;
+    background-color: #fcfcfc;
+    padding: 20px 15px;
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.03);
 }
 
 .sidebar .quick-actions button {
     text-align: left;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     transition: all 0.3s ease;
+    margin-bottom: 10px;
+    font-weight: 500;
+    padding: 12px 15px;
 }
 
 .sidebar .quick-actions button:hover {
     transform: translateX(5px);
-    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+    box-shadow: var(--box-shadow);
+    background-color: rgba(52, 102, 91, 0.05);
 }
 
 /* Chat container */
 .chat-container {
     height: calc(100vh - 56px);
     position: relative;
+    background-color: var(--light-color);
 }
 
 .chat-header {
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     min-height: 70px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #4a7d72 100%);
+    color: var(--secondary-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .chat-messages {
     overflow-y: auto;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: linear-gradient(135deg, var(--light-color) 0%, #f0f0f0 100%);
     max-height: calc(100vh - 200px);
+    padding: 20px;
 }
 
 .chat-input {
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
     background: white;
     min-height: 80px;
+    padding: 20px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
 }
 
 /* Message styles */
@@ -82,24 +103,52 @@ html, body {
 .message-bubble {
     display: inline-block;
     max-width: 70%;
-    padding: 12px 16px;
-    border-radius: 18px;
+    padding: 16px 20px;
+    border-radius: var(--border-radius);
     word-wrap: break-word;
     position: relative;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--box-shadow);
+    line-height: 1.5;
+    font-weight: 400;
 }
 
 .message.user .message-bubble {
-    background: linear-gradient(135deg, var(--primary-color), #0056b3);
+    background: linear-gradient(135deg, var(--primary-color), #4a7d72);
     color: white;
     border-bottom-right-radius: 4px;
+    position: relative;
+}
+
+.message.user .message-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: -10px;
+    width: 20px;
+    height: 15px;
+    background: var(--primary-color);
+    border-bottom-left-radius: 16px;
+    clip-path: polygon(0 0, 0% 100%, 100% 100%);
 }
 
 .message.assistant .message-bubble {
     background: white;
-    color: var(--dark-color);
-    border: 1px solid #e9ecef;
+    color: var(--text-color);
+    border: none;
     border-bottom-left-radius: 4px;
+    position: relative;
+}
+
+.message.assistant .message-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -10px;
+    width: 20px;
+    height: 15px;
+    background: white;
+    border-bottom-right-radius: 16px;
+    clip-path: polygon(100% 0, 0% 100%, 100% 100%);
 }
 
 .message-time {
@@ -173,13 +222,13 @@ html, body {
 
 .product-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+    box-shadow: 0 4px 12px rgba(26, 59, 52, 0.15);
 }
 
 .product-card .price {
     font-size: 1.25rem;
     font-weight: bold;
-    color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 .product-card .price-tier {
@@ -192,12 +241,12 @@ html, body {
 
 .price-tier.économique {
     background: #d4edda;
-    color: #155724;
+    color: #1a3b34;
 }
 
 .price-tier.moyen_gamme {
     background: #fff3cd;
-    color: #856404;
+    color: #c9a961;
 }
 
 .price-tier.premium {
@@ -250,7 +299,7 @@ html, body {
 
 .connection-status.connected {
     background: #d4edda;
-    color: #155724;
+    color: #1a3b34;
     border: 1px solid #c3e6cb;
 }
 
@@ -262,7 +311,7 @@ html, body {
 
 .connection-status.connecting {
     background: #fff3cd;
-    color: #856404;
+    color: #c9a961;
     border: 1px solid #ffeaa7;
 }
 
@@ -315,19 +364,21 @@ html, body {
 /* Focus styles */
 .form-control:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(26, 59, 52, 0.25);
 }
 
 /* Button styles */
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary-color), #0056b3);
+    background: linear-gradient(135deg, var(--primary-color), #2d5a4f);
     border: none;
     transition: all 0.3s ease;
+    color: #c9a961;
 }
 
 .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(26, 59, 52, 0.3);
+    color: #c9a961;
 }
 
 /* Statistics modal */
@@ -343,7 +394,7 @@ html, body {
 .stats-card .stats-icon {
     font-size: 2rem;
     margin-bottom: 10px;
-    color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 .stats-card .stats-value {

@@ -4,6 +4,7 @@ from flask_cors import CORS
 import os
 import json
 import logging
+import pandas as pd
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -54,6 +55,9 @@ def initialize_components():
         logger.error(f"❌ Error initializing components: {str(e)}")
         raise
 
+# Initialize components before serving routes
+initialize_components()
+
 # Routes
 @app.route('/')
 def index():
@@ -76,8 +80,14 @@ def health_check():
 def get_products():
     """Get all products."""
     if data_loader:
-        products = data_loader.load_products()
-        return jsonify(products.to_dict('records'))
+        try:
+            products = data_loader.load_products()
+            # Convert DataFrame to a simple list of dictionaries with proper null handling
+            products_list = products.replace({pd.NA: None}).to_dict('records')
+            return jsonify(products_list)
+        except Exception as e:
+            logger.error(f"Error serving products API: {str(e)}")
+            return jsonify({"error": str(e)}), 500
     return jsonify([])
 
 @app.route('/api/services')
