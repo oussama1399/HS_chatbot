@@ -13,10 +13,10 @@ HS Chatbot est un assistant IA intelligent conçu spécialement pour les service
 - **Qualification automatique** des demandes clients
 
 ### 📊 Intégration de Données
-- **Base de données vectorielle** ChromaDB pour recherche sémantique
-- **Catalogue produits** avec plus de 30 articles
-- **Services spécialisés** : mariages, soutenances, buffets
+- **Catalogue produits** avec 29 articles
+- **Services spécialisés** : mariages, soutenances, buffets (7 services)
 - **Gestion de sessions** persistante
+- **Chargement de données** optimisé avec CSV
 
 ### 🎨 Interface Utilisateur
 - **Design responsive** avec Bootstrap 5
@@ -50,7 +50,7 @@ FLASK_SECRET_KEY=votre-clé-secrète
 
 ### 3. Initialisation des Données
 ```bash
-python run.py
+python main.py
 ```
 
 ## 🏗️ Architecture
@@ -59,7 +59,6 @@ python run.py
 ```
 hs-chatbot/
 ├── main.py                 # Application Flask principale
-├── run.py                  # Script de démarrage
 ├── requirements.txt        # Dépendances Python
 ├── config.json            # Configuration application
 ├── .env                   # Variables d'environnement
@@ -71,7 +70,6 @@ hs-chatbot/
 ├── utils/                 # Utilitaires et logique métier
 │   ├── data_loader.py     # Chargement des données
 │   ├── session_manager.py # Gestion des sessions
-│   ├── vector_db.py       # Base de données vectorielle
 │   └── prompt_engineer.py # Ingénierie des prompts
 ├── templates/             # Templates HTML
 │   ├── index.html         # Interface chat principale
@@ -80,8 +78,10 @@ hs-chatbot/
 ├── static/               # Ressources statiques
 │   ├── css/style.css     # Styles personnalisés
 │   └── js/app.js         # JavaScript application
-└── tests/                # Tests unitaires
-    └── test_components.py
+├── data_preprocessing.ipynb # Notebook de préparation des données
+├── datagen.ipynb          # Notebook de génération de données
+└── models/               # Modèles et agents
+    └── agents.ipynb      # Notebook d'agents IA
 ```
 
 ### 🔧 Composants Principaux
@@ -96,12 +96,7 @@ hs-chatbot/
 - Historique des conversations
 - Contexte utilisateur persistant
 
-#### 3. **VectorDatabase** (`utils/vector_db.py`)
-- Intégration ChromaDB
-- Recherche sémantique avancée
-- Embeddings avec Sentence Transformers
-
-#### 4. **PromptEngineer** (`utils/prompt_engineer.py`)
+#### 3. **PromptEngineer** (`utils/prompt_engineer.py`)
 - Génération de réponses avec Gemini
 - Contextualisation des prompts
 - Extraction d'intentions utilisateur
@@ -110,7 +105,7 @@ hs-chatbot/
 
 ### Démarrage de l'Application
 ```bash
-python run.py
+python main.py
 ```
 
 ### Interface Web
@@ -121,24 +116,32 @@ Accédez à `http://localhost:5000` pour utiliser l'interface chat.
 - `GET /api/stats` - Statistiques de l'application
 - `GET /api/products` - Liste des produits
 - `GET /api/services` - Liste des services
-- `GET /api/search?q=terme` - Recherche produits/services
 
 ### WebSocket Events
 - `connect` - Connexion utilisateur
 - `message` - Envoi de message
-- `get_suggestions` - Demande de suggestions
-- `typing` - Indicateur de saisie
 
-## 🧪 Tests
+## 🧪 Développement
 
-### Tests Unitaires
+### Notebooks de Développement
+- `data_preprocessing.ipynb` - Préparation des données
+- `datagen.ipynb` - Génération de données
+- `models/agents.ipynb` - Développement des agents IA
+
+### Démarrage Rapide
 ```bash
-python -m pytest tests/ -v
-```
+# Cloner le projet
+git clone <repository-url>
+cd hs-chatbot
 
-### Tests des Composants
-```bash
-python tests/test_components.py
+# Installer les dépendances
+pip install -r requirements.txt
+
+# Configurer les variables d'environnement
+# Éditer le fichier .env avec vos clés API
+
+# Démarrer l'application
+python main.py
 ```
 
 ## 🔐 Sécurité
@@ -165,7 +168,7 @@ python tests/test_components.py
 - Performance des requêtes
 
 ### Logs
-Les logs sont sauvegardés dans `hs_chatbot.log` et affichés dans la console.
+Les logs sont affichés dans la console avec des informations détaillées sur le fonctionnement de l'application.
 
 ## 🚀 Déploiement
 
@@ -180,6 +183,44 @@ ENVIRONMENT=production
 PORT=5000
 GOOGLE_API_KEY=votre-clé-production
 ```
+
+## 🤝 Contribution
+
+### Développement
+1. Fork le projet
+2. Créez une branche feature (`git checkout -b feature/AmazingFeature`)
+3. Committez vos changements (`git commit -m 'Add AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrez une Pull Request
+
+### Guidelines
+- Suivre PEP 8 pour le code Python
+- Documenter les nouvelles fonctionnalités
+- Utiliser des messages de commit descriptifs
+- Tester les changements avant de les proposer
+
+## 📞 Support
+
+Pour toute question ou problème :
+- Consultez la documentation
+- Vérifiez les logs d'erreur dans la console
+- Ouvrez une issue sur GitHub
+
+## 🎯 Fonctionnalités Actuelles
+
+### ✅ Implémentées
+- Chat en temps réel avec WebSocket
+- Réponses IA avec Google Gemini
+- Gestion des produits et services (29 produits, 7 services)
+- Interface utilisateur responsive
+- Gestion des sessions utilisateur
+- API REST pour l'intégration
+
+### 🔄 En Développement
+- Recherche sémantique avancée
+- Système de recommandations
+- Analytics et métriques détaillées
+- Optimisation des performances
 
 
 ## 📄 Licence

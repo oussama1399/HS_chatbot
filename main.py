@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, jsonify, session
-from flask_socketio import SocketIO, emit, join_room, leave_room
+from flask import Flask, render_template, request, jsonify
+from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 import os
 import json
@@ -7,11 +7,9 @@ import logging
 from datetime import datetime
 from dotenv import load_dotenv
 
-# Import utility classes
+# Import only essential utility classes
 from utils.data_loader import DataLoader
 from utils.session_manager import SessionManager
-from utils.vector_db import VectorDatabase
-from utils.prompt_engineer import PromptEngineer
 
 # Load environment variables
 load_dotenv()
@@ -34,12 +32,10 @@ logger = logging.getLogger(__name__)
 # Global variables for components
 data_loader = None
 session_manager = None
-vector_db = None
-prompt_engineer = None
 
 def initialize_components():
-    """Initialize all components."""
-    global data_loader, session_manager, vector_db, prompt_engineer
+    """Initialize essential components only."""
+    global data_loader, session_manager
     
     try:
         logger.info("Initializing components...")
@@ -52,19 +48,13 @@ def initialize_components():
         # Initialize session manager
         session_manager = SessionManager()
         
-        # Initialize vector database
-        vector_db = VectorDatabase()
-        vector_db.initialize_database(products_df, services_df)
-        
-        # Initialize prompt engineer
-        prompt_engineer = PromptEngineer()
-        
-        logger.info("All components initialized successfully")
+        logger.info(f"✅ Loaded {len(products_df)} products and {len(services_df)} services")
         
     except Exception as e:
-        logger.error(f"Error initializing components: {str(e)}")
+        logger.error(f"❌ Error initializing components: {str(e)}")
         raise
 
+# Routes
 @app.route('/')
 def index():
     """Main chat interface."""
@@ -78,165 +68,124 @@ def health_check():
         'timestamp': datetime.now().isoformat(),
         'components': {
             'data_loader': data_loader is not None,
-            'session_manager': session_manager is not None,
-            'vector_db': vector_db is not None,
-            'prompt_engineer': prompt_engineer is not None
+            'session_manager': session_manager is not None
         }
     })
+
+@app.route('/api/products')
+def get_products():
+    """Get all products."""
+    if data_loader:
+        products = data_loader.load_products()
+        return jsonify(products.to_dict('records'))
+    return jsonify([])
+
+@app.route('/api/services')
+def get_services():
+    """Get all services."""
+    if data_loader:
+        services = data_loader.load_services()
+        return jsonify(services.to_dict('records'))
+    return jsonify([])
 
 @app.route('/api/stats')
 def get_stats():
     """Get application statistics."""
-    try:
-        stats = {
-            'products': data_loader.get_product_statistics(),
-            'sessions': session_manager.get_session_stats(),
-            'vector_db': vector_db.get_collection_stats()
-        }
-        return jsonify(stats)
-    except Exception as e:
-        logger.error(f"Error getting stats: {str(e)}")
-        return jsonify({'error': 'Unable to get statistics'}), 500
+    if data_loader:
+        products_df = data_loader.load_products()
+        services_df = data_loader.load_services()
+        
+        return jsonify({
+            'products': {
+                'total_products': len(products_df),
+                'available_products': len(products_df[products_df['is_available'] == True]) if 'is_available' in products_df.columns else len(products_df)
+            },
+            'services': {
+                'total_services': len(services_df)
+            },
+            'sessions': session_manager.get_session_stats() if session_manager else {'total': 0}
+        })
+    return jsonify({'error': 'Data not loaded'})
 
-@app.route('/api/products')
-def get_products():
-    """Get available products."""
-    try:
-        products = data_loader.get_available_products()
-        return jsonify(products)
-    except Exception as e:
-        logger.error(f"Error getting products: {str(e)}")
-        return jsonify({'error': 'Unable to get products'}), 500
-
-@app.route('/api/services')
-def get_services():
-    """Get available services."""
-    try:
-        services = data_loader.get_all_services()
-        return jsonify(services)
-    except Exception as e:
-        logger.error(f"Error getting services: {str(e)}")
-        return jsonify({'error': 'Unable to get services'}), 500
-
-@app.route('/api/search')
-def search():
-    """Search products and services."""
-    try:
-        query = request.args.get('q', '')
-        search_type = request.args.get('type', 'all')  # all, products, services
-        
-        if not query:
-            return jsonify({'error': 'Query parameter is required'}), 400
-        
-        results = {}
-        
-        if search_type in ['all', 'products']:
-            results['products'] = vector_db.search_products(query, n_results=5)
-        
-        if search_type in ['all', 'services']:
-            results['services'] = vector_db.search_services(query, n_results=3)
-        
-        return jsonify(results)
-        
-    except Exception as e:
-        logger.error(f"Error in search: {str(e)}")
-        return jsonify({'error': 'Search failed'}), 500
-
+# WebSocket events
 @socketio.on('connect')
 def handle_connect():
     """Handle client connection."""
-    try:
-        # Create or get session
-        session_id = request.sid
-        session_manager.create_session(session_id)
-        
-        # Join room
-        join_room(session_id)
-        
-        # Send greeting
-        greeting = prompt_engineer.get_greeting_message()
-        emit('message', {
-            'type': 'text',
-            'content': greeting,
-            'sender': 'assistant',
-            'timestamp': datetime.now().isoformat()
-        })
-        
-        logger.info(f"Client connected: {session_id}")
-        
-    except Exception as e:
-        logger.error(f"Error handling connect: {str(e)}")
+    logger.info("✅ Client connected")
+    emit('message', {
+        'type': 'text',
+        'content': 'Bonjour! Je suis votre assistant HS Traiteur. Comment puis-je vous aider aujourd\'hui?',
+        'sender': 'assistant',
+        'timestamp': datetime.now().isoformat()
+    })
 
 @socketio.on('disconnect')
 def handle_disconnect():
     """Handle client disconnection."""
-    try:
-        session_id = request.sid
-        leave_room(session_id)
-        logger.info(f"Client disconnected: {session_id}")
-        
-    except Exception as e:
-        logger.error(f"Error handling disconnect: {str(e)}")
+    logger.info("❌ Client disconnected")
 
 @socketio.on('message')
 def handle_message(data):
     """Handle incoming messages."""
+    logger.info(f"📨 Received message: {data}")
+    
     try:
-        session_id = request.sid
         user_message = data.get('content', '')
-        
         if not user_message:
-            emit('error', {'message': 'Message content is required'})
             return
         
-        # Generate response
-        response = prompt_engineer.generate_response(user_message, session_id)
+        # Import AI components
+        import google.generativeai as genai
         
-        # Send response
+        # Configure Gemini
+        genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        
+        # Load data for context
+        products_df = data_loader.load_products() if data_loader else None
+        services_df = data_loader.load_services() if data_loader else None
+        
+        # Create context-aware prompt
+        context = f"""Tu es un assistant IA pour HS Traiteur, un service de restauration.
+
+Informations disponibles:
+- {len(products_df) if products_df is not None else 0} produits dans notre catalogue
+- {len(services_df) if services_df is not None else 0} services disponibles
+- Spécialisé dans la restauration et traiteur
+
+Réponds en français de manière professionnelle et utile. Si l'utilisateur demande des informations sur nos produits ou services, utilise les données disponibles.
+
+Message utilisateur: {user_message}"""
+        
+        # Generate AI response
+        response = model.generate_content(
+            context,
+            generation_config=genai.types.GenerationConfig(
+                temperature=0.7,
+                max_output_tokens=500,
+                top_p=0.9,
+            )
+        )
+        
+        ai_response = response.text
+        
+        # Send AI response
         emit('message', {
             'type': 'text',
-            'content': response,
+            'content': ai_response,
             'sender': 'assistant',
             'timestamp': datetime.now().isoformat()
         })
         
     except Exception as e:
-        logger.error(f"Error handling message: {str(e)}")
-        emit('error', {'message': 'Unable to process message'})
-
-@socketio.on('get_suggestions')
-def handle_get_suggestions(data):
-    """Handle product suggestions request."""
-    try:
-        session_id = request.sid
-        preferences = data.get('preferences', {})
-        
-        suggestions = prompt_engineer.suggest_products(preferences, session_id)
-        
-        emit('suggestions', {
-            'products': suggestions,
+        logger.error(f"❌ Error generating AI response: {str(e)}")
+        # Fallback response
+        emit('message', {
+            'type': 'text',
+            'content': "Désolé, je rencontre une difficulté technique. Pouvez-vous reformuler votre question?",
+            'sender': 'assistant',
             'timestamp': datetime.now().isoformat()
         })
-        
-    except Exception as e:
-        logger.error(f"Error getting suggestions: {str(e)}")
-        emit('error', {'message': 'Unable to get suggestions'})
-
-@socketio.on('typing')
-def handle_typing(data):
-    """Handle typing indicator."""
-    try:
-        session_id = request.sid
-        is_typing = data.get('typing', False)
-        
-        # Broadcast typing status to the room (if needed for multi-user)
-        emit('typing_status', {
-            'session_id': session_id,
-            'typing': is_typing
-        }, room=session_id, include_self=False)
-        
-    except Exception as e:
-        logger.error(f"Error handling typing: {str(e)}")
 
 @app.errorhandler(404)
 def not_found(error):
@@ -258,9 +207,10 @@ if __name__ == '__main__':
         port = int(os.getenv('PORT', 5000))
         debug = os.getenv('ENVIRONMENT', 'development') == 'development'
         
-        logger.info(f"Starting HS Chatbot on port {port}")
+        logger.info(f"🚀 Starting HS Chatbot on port {port}")
+        logger.info(f"🌐 Access the app at: http://localhost:{port}")
         socketio.run(app, host='0.0.0.0', port=port, debug=debug)
         
     except Exception as e:
-        logger.error(f"Failed to start application: {str(e)}")
+        logger.error(f"❌ Failed to start application: {str(e)}")
         raise
