@@ -223,8 +223,11 @@ class HSChatbot {
         // Convert line breaks
         formattedContent = formattedContent.replace(/\n/g, '<br>');
         
-        // Highlight prices
+        // Highlight prices in MAD
         formattedContent = formattedContent.replace(/(\d+(?:\.\d+)?\s*MAD)/g, '<span class="price">$1</span>');
+        
+        // Highlight prices in dirhams
+        formattedContent = formattedContent.replace(/(\d+(?:\.\d+)?\s*dirhams)/gi, '<span class="price">$1</span>');
         
         // Highlight product names
         formattedContent = formattedContent.replace(/Produit: ([^|]+)/g, '<strong>Produit: $1</strong>');

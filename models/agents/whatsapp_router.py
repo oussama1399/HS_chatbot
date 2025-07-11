@@ -3,10 +3,11 @@ import logging
 import urllib.parse
 try:
     from dotenv import load_dotenv
-    
 except ImportError:
+    # Define a simple version if the package is not available
     def load_dotenv():
         logging.warning("dotenv package not installed, environment variables may not be loaded")
+        return False
 
 class WhatsAppRouterAgent:
     def __init__(self):
@@ -22,9 +23,12 @@ class WhatsAppRouterAgent:
         base_link = self.whatsapp_link
         separator = "&" if "?" in base_link else "?"
         encoded_message = urllib.parse.quote(f"Bonjour, j'ai une question concernant: {query}")
-        return f"{base_link}{separator}text={encoded_message}"
+        final_link = f"{base_link}{separator}text={encoded_message}"
+        logging.info(f"Generated WhatsApp link: {final_link} for query: {query}")
+        return final_link
         
-    def run(self, query: str) -> str:
+    def run(self, query: str) -> dict:
+        """Return WhatsApp contact information."""
         whatsapp_link = self._generate_whatsapp_link(query)
         response = {
             "type": "whatsapp_redirect",
@@ -32,6 +36,7 @@ class WhatsAppRouterAgent:
             "whatsapp_link": whatsapp_link,
             "phone_number": self.phone_number
         }
+        logging.info(f"WhatsAppRouterAgent returning response: {response}")
         return response
         
     def get_human_contact_message(self, query: str) -> dict:

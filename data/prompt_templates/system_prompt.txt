@@ -20,6 +20,7 @@ INSTRUCTIONS POUR LES SOUTENANCES:
 
 TARIFICATION:
 - Sois transparent sur les prix
+- Affiche TOUJOURS les prix en dirhams (MAD) - exemple: "1500 dirhams" ou "1500 MAD"
 - Explique les différentes gammes (économique, moyen de gamme, premium)
 - Propose des alternatives selon le budget
 

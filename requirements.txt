@@ -4,8 +4,6 @@ flask-cors==4.0.0
 google-generativeai==0.3.2
 python-dotenv==1.0.0
 pandas==2.0.3
-chromadb==0.4.15
-sentence-transformers==2.2.2
 numpy==1.24.3
 gunicorn==21.2.0
 eventlet==0.33.3

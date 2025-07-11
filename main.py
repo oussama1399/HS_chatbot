@@ -147,37 +147,12 @@ def handle_message(data):
         # Import AI components
         import google.generativeai as genai
         from models.agents.orchestrator import Orchestrator
-        from models.agents.whatsapp_router import WhatsAppRouterAgent
         
-        # Configure Gemini
+        # Configure Gemini (only for API key verification)
         genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
-        model = genai.GenerativeModel('gemini-1.5-flash')
         
-        # Load data for context
-        products_df = data_loader.load_products() if data_loader else None
-        services_df = data_loader.load_services() if data_loader else None
-        
-        # Vérifier si l'utilisateur demande explicitement un contact humain
-        if any(term in user_message.lower() for term in [
-            "parler à un humain", "agent humain", "personne réelle", "vraie personne", 
-            "conseiller", "représentant", "whatsapp", "téléphone", "contact direct"
-        ]):
-            # Rediriger vers WhatsApp
-            whatsapp_agent = WhatsAppRouterAgent()
-            contact_info = whatsapp_agent.get_human_contact_message(user_message)
-            
-            emit('message', {
-                'type': 'human_contact',
-                'content': "Je vous connecte avec un conseiller. Un moment s'il vous plaît...",
-                'whatsapp_link': contact_info["whatsapp_link"],
-                'phone_number': contact_info["phone_number"],
-                'sender': 'assistant',
-                'timestamp': datetime.now().isoformat()
-            })
-            return
-        
-        # Utiliser l'orchestrateur pour déterminer la meilleure réponse
-        orchestrator = Orchestrator(model)
+        # Utiliser l'orchestrateur directement (sans passer de LLM)
+        orchestrator = Orchestrator()
         result = orchestrator.route_query(user_message)
         
         # Vérifier si la réponse suggère un contact humain

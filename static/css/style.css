@@ -13,6 +13,7 @@
     --text-color: #333333;
     --border-radius: 12px;
     --box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    --whatsapp-color: #25D366;
 }
 
 /* Base styles */
@@ -149,6 +150,15 @@ html, body {
     background: white;
     border-bottom-right-radius: 16px;
     clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+}
+
+.message-bubble .price {
+    font-weight: bold;
+    color: var(--secondary-color);
+    background-color: rgba(212, 183, 110, 0.1);
+    padding: 0 5px;
+    border-radius: 4px;
+    display: inline-block;
 }
 
 .message-time {
@@ -436,45 +446,55 @@ html, body {
     }
 }
 
-/* WhatsApp Contact Button */
-.whatsapp-contact-btn {
-    background-color: #25D366;
-    color: white;
-    border: none;
+/* Human Contact and WhatsApp Styles */
+.human-contact-message {
+    padding: 16px;
+    background-color: white;
     border-radius: var(--border-radius);
-    padding: 10px 16px;
-    margin-right: 10px;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    font-weight: 500;
+    border-left: 4px solid var(--whatsapp-color);
     box-shadow: var(--box-shadow);
 }
 
-.whatsapp-contact-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
-    background-color: #20ba5a;
-    color: white;
-}
-
-.whatsapp-contact-btn i {
-    margin-right: 8px;
-    font-size: 1.2em;
-}
-
-.human-contact-message {
-    background-color: rgba(37, 211, 102, 0.1);
-    border: 1px solid rgba(37, 211, 102, 0.3);
-    border-radius: var(--border-radius);
-    padding: 16px;
-    margin-top: 10px;
+.human-contact-message h6 {
+    color: var(--primary-color);
+    font-weight: 600;
     margin-bottom: 10px;
+}
+
+.human-contact-message p {
+    color: var(--text-color);
+    margin-bottom: 15px;
 }
 
 .human-contact-actions {
     display: flex;
+    gap: 10px;
     margin-top: 15px;
+}
+
+.whatsapp-contact-btn {
+    background-color: var(--whatsapp-color);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(37, 211, 102, 0.2);
+}
+
+.whatsapp-contact-btn:hover {
+    background-color: #20ba57;
+    transform: translateY(-2px);
+    color: white;
+    box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3);
+}
+
+.whatsapp-contact-btn i {
+    margin-right: 8px;
+    font-size: 1.1rem;
 }
 
 /* Print styles */
