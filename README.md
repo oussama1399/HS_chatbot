@@ -129,63 +129,8 @@ Accédez à `http://localhost:5000` pour utiliser l'interface chat.
 - `get_suggestions` - Demande de suggestions
 - `typing` - Indicateur de saisie
 
-## 🧪 Tests
-
-### Tests Unitaires
-```bash
-python -m pytest tests/ -v
-```
-
-### Tests des Composants
-```bash
-python tests/test_components.py
-```
-
-## 🔐 Sécurité
-
-### Bonnes Pratiques Implémentées
-- ✅ Variables d'environnement pour les clés API
-- ✅ Validation des entrées utilisateur
-- ✅ Gestion des erreurs robuste
-- ✅ Sessions sécurisées
-- ✅ CORS configuré
-
-### Recommandations
-- Ne jamais committer le fichier `.env`
-- Utiliser HTTPS en production
-- Implémenter la limitation de taux (rate limiting)
-- Monitorer les logs d'erreur
-
-## 📈 Monitoring et Statistiques
-
-### Métriques Disponibles
-- Nombre de sessions actives
-- Messages échangés
-- Produits les plus consultés
-- Performance des requêtes
-
-### Logs
-Les logs sont sauvegardés dans `hs_chatbot.log` et affichés dans la console.
-
-## 🚀 Déploiement
-
-### Production avec Gunicorn
-```bash
-gunicorn --worker-class eventlet -w 1 main:app
-```
-
-### Variables d'Environnement Production
-```env
-ENVIRONMENT=production
-PORT=5000
-GOOGLE_API_KEY=votre-clé-production
-```
-
-
 ## 📄 Licence
 
 Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
----
 
-**Développé avec ❤️ pour HS Traiteur**
