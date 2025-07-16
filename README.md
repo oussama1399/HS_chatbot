@@ -50,7 +50,7 @@ FLASK_SECRET_KEY=votre-clé-secrète
 
 ### 3. Initialisation des Données
 ```bash
-python run.py
+python main.py
 ```
 
 ## 🏗️ Architecture
