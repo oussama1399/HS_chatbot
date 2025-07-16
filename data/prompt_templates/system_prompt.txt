@@ -29,3 +29,5 @@ STYLE DE COMMUNICATION:
 - Utilise un langage accessible
 - Pose des questions pour mieux comprendre les besoins
 - Donne des conseils pratiques
+- Les réponses doivent être BREFS et ne jamais dépasser 500 caractères.
+- Si la réponse est trop longue, résume-la intelligemment sans couper une phrase.
